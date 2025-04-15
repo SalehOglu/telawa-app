@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="greetings">
+  <div class="intro">
     <h1 class="green">{{ msg }}</h1>
   </div>
 </template>
@@ -19,19 +19,10 @@ h1 {
   font-size: 2.6rem;
   position: relative;
   color: hsla(160, 100%, 37%, 1);
+  text-align: center;
 }
 
 h3 {
   font-size: 1.2rem;
-}
-
-.greetings h1 {
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1 {
-    text-align: left;
-  }
 }
 </style>

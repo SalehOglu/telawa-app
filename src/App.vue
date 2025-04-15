@@ -1,5 +1,7 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
+import recitersData from './data/reciters.json'
+import suwarData from './data/suwar.json'
 </script>
 
 <template>
@@ -15,17 +17,17 @@ import HelloWorld from './components/HelloWorld.vue'
         </div>
 
         <div class="trackInfo">
-          <span class="trackTitle">{{ current.title }}</span> -
-          <span class="trackArtist">{{ current.artist }}</span>
+          <div class="trackTitle">{{ current.title }}</div>
+          <div class="trackArtist">{{ current.artist }}</div>
           <div class="playlist">
             <h2>The Playlist</h2>
             <div v-for="(track, index) in tracks" :key="index">
               <div
                 class="item"
                 @click="tooglePlay(track)"
-                :class="{ active: isPlaying && current === track }"
+                :class="{ playing: isPlaying && current === track, active: current === track }"
               >
-                {{ track.title }} - {{ track.artist }}
+                {{ track.title }}
               </div>
             </div>
           </div>
@@ -50,22 +52,30 @@ export default {
     }
   },
   created() {
-    const baseUrl = 'https://server8.mp3quran.net/afs/'
-    const surahCount = 114
+    const targetReciter = recitersData.reciters.find((reciter) => Number(reciter.id) === 17)
 
-    // Generate tracks 1–114
-    this.tracks = Array.from({ length: surahCount }, (_, i) => {
-      const surahNumber = String(i + 1).padStart(3, '0')
-      return {
-        title: `Surah ${i + 1}`,
-        artist: 'Mishary Rashid Alafasy',
-        src: `${baseUrl}${surahNumber}.mp3`,
-      }
-    })
+    if (targetReciter && targetReciter.moshaf.length > 0) {
+      const moshaf = targetReciter.moshaf[0]
+      const baseUrl = moshaf.server
+      const surahList = moshaf.surah_list.split(',')
 
-    this.index = 0
-    this.current = this.tracks[0]
-    this.player.src = this.current.src
+      this.tracks = surahList.map((surahNumber) => {
+        const padded = String(surahNumber).padStart(3, '0')
+        const surah = suwarData.suwar.find((s) => s.id === parseInt(surahNumber, 10))
+
+        return {
+          title: surah ? `${surah.id}. ${surah.name}` : `Surah ${surahNumber}`,
+          artist: targetReciter.name,
+          src: `${baseUrl}${padded}.mp3`,
+        }
+      })
+
+      this.index = 0
+      this.current = this.tracks[0]
+      this.player.src = this.current.src
+    } else {
+      console.warn('Reciter or Mushaf not found.')
+    }
   },
   methods: {
     tooglePlay(track) {
@@ -160,6 +170,9 @@ button:hover {
 }
 
 .playlist .item.active {
+  background: #444;
+}
+.playlist .item.playing {
   background: linear-gradient(to right, #cc2e5d, #ff5858);
 }
 </style>
