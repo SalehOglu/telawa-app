@@ -36,3 +36,4 @@ npm run lint
 - Add modern audio player
 - Add audio waveform effect
 - Add dropdown menu for reciters
+- Add search bar to filter audios by name.
