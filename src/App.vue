@@ -1,5 +1,7 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
+import MusicControls from './components/MusicControls.vue'
+import Playlist from './components/Playlist.vue'
 import recitersData from './data/reciters.json'
 import suwarData from './data/suwar.json'
 </script>
@@ -10,30 +12,24 @@ import suwarData from './data/suwar.json'
       <HelloWorld msg="Telawa App" />
 
       <div class="trackPlayer">
-        <div class="controls">
-          <button @click="prevTrack">Previous</button>
-          <button @click="tooglePlay()">{{ isPlaying ? 'Pause' : 'Play' }}</button>
-          <button @click="nextTrack">Next</button>
-        </div>
+        <MusicControls
+          :isPlaying="isPlaying"
+          @togglePlay="tooglePlay(current)"
+          @nextTrack="nextTrack"
+          @prevTrack="prevTrack"
+        />
 
         <div class="trackInfo">
           <div class="trackTitle">{{ current.title }}</div>
           <div class="trackArtist">{{ current.artist }}</div>
-          <div class="playlist">
-            <h2>The Playlist</h2>
-            <div v-for="(track, index) in tracks" :key="index">
-              <div
-                class="item"
-                @click="tooglePlay(track)"
-                :class="{ playing: isPlaying && current === track, active: current === track }"
-              >
-                {{ track.title }}
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div class="waves"></div>
+          <Playlist
+            :tracks="tracks"
+            :current="current"
+            :isPlaying="isPlaying"
+            @playTrack="tooglePlay"
+          />
+        </div>
       </div>
     </div>
   </header>
@@ -81,6 +77,7 @@ export default {
     tooglePlay(track) {
       if (track && track !== this.current) {
         this.current = track
+        this.index = this.tracks.findIndex((t) => t.src === track.src)
         this.player.src = this.current.src
         this.player.play()
         this.isPlaying = true
@@ -126,53 +123,15 @@ export default {
 
 <style scoped>
 .trackPlayer {
-  max-width: 400px;
+  max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
   background: #f5f5f5;
   border-radius: 8px;
 }
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  min-width: 70px;
-}
-button:hover {
-  background-color: #0056b3;
-}
+
 .trackInfo {
   text-align: center;
   margin-bottom: 20px;
-}
-.playlist {
-  margin: 10px auto;
-  padding: 10px;
-}
-.playlist .item {
-  background-color: peru;
-  cursor: pointer;
-  padding: 5px;
-  margin: 5px 0;
-  color: white;
-}
-.playlist .item:hover {
-  background-color: hsla(160, 100%, 37%, 1);
-}
-
-.playlist .item.active {
-  background: #444;
-}
-.playlist .item.playing {
-  background: linear-gradient(to right, #cc2e5d, #ff5858);
 }
 </style>
