@@ -44,11 +44,11 @@ defineProps({
   color: white;
 }
 .playlist .item:hover {
-  background-color: hsla(160, 100%, 37%, 1);
+  background: #444;
 }
 
 .playlist .item.active {
-  background: #444;
+  background-color: hsla(160, 100%, 37%, 1);
 }
 .playlist .item.playing {
   background: linear-gradient(to right, #cc2e5d, #ff5858);

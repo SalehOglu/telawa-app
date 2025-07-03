@@ -14,7 +14,7 @@ import suwarData from './data/suwar.json'
       <div class="trackPlayer">
         <MusicControls
           :isPlaying="isPlaying"
-          @togglePlay="tooglePlay(current)"
+          @togglePlay="togglePlay(current)"
           @nextTrack="nextTrack"
           @prevTrack="prevTrack"
         />
@@ -27,7 +27,7 @@ import suwarData from './data/suwar.json'
             :tracks="tracks"
             :current="current"
             :isPlaying="isPlaying"
-            @playTrack="tooglePlay"
+            @playTrack="togglePlay"
           />
         </div>
       </div>
@@ -69,16 +69,21 @@ export default {
       this.index = 0
       this.current = this.tracks[0]
       this.player.src = this.current.src
+      this.player.addEventListener('ended', this.nextTrack)
     } else {
       console.warn('Reciter or Mushaf not found.')
     }
   },
+  beforeUnmount() {
+    this.player.removeEventListener('ended', this.nextTrack)
+  },
   methods: {
-    tooglePlay(track) {
+    togglePlay(track) {
       if (track && track !== this.current) {
         this.current = track
         this.index = this.tracks.findIndex((t) => t.src === track.src)
         this.player.src = this.current.src
+        this.player.load()
         this.player.play()
         this.isPlaying = true
         return
@@ -114,7 +119,7 @@ export default {
       // this.index = (this.index - 1 + this.tracks.length) % this.tracks.length
       this.current = this.tracks[this.index]
       this.player.src = this.current.src
-      this.player.load // ensures the new track is ready to play
+      this.player.load() // ensures the new track is ready to play
       if (this.isPlaying) this.player.play()
     },
   },
