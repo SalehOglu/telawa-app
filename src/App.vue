@@ -22,15 +22,14 @@ import suwarData from './data/suwar.json'
         <div class="trackInfo">
           <div class="trackTitle">{{ current.title }}</div>
           <div class="trackArtist">{{ current.artist }}</div>
-
-          <Playlist
-            :tracks="tracks"
-            :current="current"
-            :isPlaying="isPlaying"
-            @playTrack="togglePlay"
-          />
         </div>
       </div>
+      <Playlist
+        :tracks="tracks"
+        :current="current"
+        :isPlaying="isPlaying"
+        @playTrack="togglePlay"
+      />
     </div>
   </header>
 </template>
@@ -131,8 +130,16 @@ export default {
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
-  background: #fff8e7;
+  max-width: 480px;
   border-radius: 8px;
+  background: #fffaee;
+  border: 1px solid #fff3eb;
+  box-shadow:
+    0 2px 2px rgba(255, 107, 0, 0.25),
+    0 4px 4px rgba(255, 107, 0, 0.2),
+    0 8px 8px rgba(255, 107, 0, 0.15),
+    0 16px 16px rgba(255, 107, 0, 0.1),
+    0 24px 24px rgba(255, 107, 0, 0.05);
 }
 
 .trackInfo {

@@ -1,7 +1,9 @@
 <template>
   <div class="controls">
     <button @click="$emit('prevTrack')">Previous</button>
-    <button @click="$emit('togglePlay')" class="playBtn">{{ isPlaying ? 'Pause' : 'Play' }}</button>
+    <button @click="$emit('togglePlay')" class="playBtn">
+      <span class="icon" :class="isPlaying ? 'icon-pause' : 'icon-play'"></span>
+    </button>
     <button @click="$emit('nextTrack')">Next</button>
   </div>
 </template>
@@ -23,21 +25,12 @@ export default {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin: 40px auto;
   align-items: center;
-  background: #fffaee;
-  border: 1px solid #fff3eb;
   border-radius: 24px;
   color: #565656;
   max-width: 480px;
-  padding: 24px;
+  margin-bottom: 20px;
   position: relative;
-  box-shadow:
-    0 2px 2px rgba(255, 107, 0, 0.25),
-    0 4px 4px rgba(255, 107, 0, 0.2),
-    0 8px 8px rgba(255, 107, 0, 0.15),
-    0 16px 16px rgba(255, 107, 0, 0.1),
-    0 24px 24px rgba(255, 107, 0, 0.05);
 }
 
 .controls button {
@@ -45,10 +38,11 @@ export default {
   border-radius: 100%;
   border: none;
   cursor: pointer;
-  min-width: 70px;
   background: linear-gradient(to bottom left, #fff8e7, #ffe1cc);
   color: #838383;
+  vertical-align: middle;
 }
+
 .playBtn {
   background: linear-gradient(to bottom left, #ffffff, #fff8e7);
   border: 1px solid #fff3eb !important;
@@ -64,7 +58,46 @@ export default {
     -16px 16px 16px rgba(255, 195, 153, 0.05),
     16px -16px 16px rgba(255, 255, 255, 0.05);
   color: #f26600 !important;
-  padding: 20px !important;
+  padding-block: 20px 15px !important;
+  width: 70px;
+  height: 70px;
+}
+
+.playBtn .icon {
+  display: inline-block;
+  width: 0;
+  height: 0;
+}
+
+.playBtn .icon.icon-play {
+  border-style: solid;
+  border-width: 14px 0px 14px 28px;
+  border-color: transparent transparent transparent #f26600;
+}
+
+.playBtn .icon.icon-pause {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  position: relative;
+  padding-inline: 10px;
+}
+
+.playBtn .icon.icon-pause::before,
+.playBtn .icon.icon-pause::after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 100%;
+  background-color: #f26600;
+}
+
+.playBtn .icon.icon-pause::before {
+  left: 0;
+}
+
+.playBtn .icon.icon-pause::after {
+  right: 0;
 }
 
 .controls button:hover {

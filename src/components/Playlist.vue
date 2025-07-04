@@ -27,6 +27,7 @@ defineProps({
 .playlist {
   margin: 10px auto;
   padding: 10px;
+  text-align: center;
 }
 
 .playlist h2 {
