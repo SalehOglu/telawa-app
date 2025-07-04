@@ -131,7 +131,7 @@ export default {
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
-  background: #f5f5f5;
+  background: #fff8e7;
   border-radius: 8px;
 }
 
