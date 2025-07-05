@@ -30,10 +30,12 @@ npm run build
 npm run lint
 ```
 
+### Live url Link [Live link](https://telawah-q.netlify.app/)
+
 ### Todo
 
 - Add RTL support
 - Add modern audio player
-- Add audio waveform effect
+<!-- - Add audio waveform effect -->
 - Add dropdown menu for reciters
 - Add search bar to filter audios by name.
