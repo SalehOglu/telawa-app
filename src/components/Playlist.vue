@@ -1,6 +1,6 @@
 <template>
   <div class="playlist">
-    <h2>The Playlist</h2>
+    <h2>Qur'an Surahs</h2>
     <div class="tracksContainer">
       <div
         v-for="(track, index) in tracks"

@@ -1,6 +1,6 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
-import MusicControls from './components/MusicControls.vue'
+import AudioPlayer from './components/AudioPlayer.vue'
 import Playlist from './components/Playlist.vue'
 import recitersData from './data/reciters.json'
 import suwarData from './data/suwar.json'
@@ -12,11 +12,13 @@ import suwarData from './data/suwar.json'
       <HelloWorld msg="Telawa App" />
 
       <div class="trackPlayer">
-        <MusicControls
+        <AudioPlayer
+          :track="current"
           :isPlaying="isPlaying"
-          @togglePlay="togglePlay(current)"
+          @togglePlay="togglePlay"
           @nextTrack="nextTrack"
           @prevTrack="prevTrack"
+          @ready="onWaveformReady"
         />
 
         <div class="trackInfo">
@@ -42,7 +44,6 @@ export default {
       isPlaying: false,
       current: {},
       index: 0,
-      player: new Audio(),
       tracks: [],
     }
   },
@@ -67,59 +68,45 @@ export default {
 
       this.index = 0
       this.current = this.tracks[0]
-      this.player.src = this.current.src
-      this.player.addEventListener('ended', this.nextTrack)
     } else {
       console.warn('Reciter or Mushaf not found.')
     }
   },
-  beforeUnmount() {
-    this.player.removeEventListener('ended', this.nextTrack)
-  },
   methods: {
+    preloadTrack(track) {
+      const audio = new Audio()
+      audio.src = track.src
+      audio.preload = 'auto'
+    },
+    onWaveformReady() {
+      if (this.isPlaying) {
+        this.isPlaying = true
+      }
+    },
     togglePlay(track) {
       if (track && track !== this.current) {
         this.current = track
         this.index = this.tracks.findIndex((t) => t.src === track.src)
-        this.player.src = this.current.src
-        this.player.load()
-        this.player.play()
         this.isPlaying = true
-        return
-      }
-
-      if (!this.player.src) {
-        this.current = this.tracks[this.index]
-        this.player.src = this.current.src
-      }
-
-      if (this.isPlaying) {
-        this.player.pause()
-        this.isPlaying = false
-      } else {
-        this.player.play()
-        this.isPlaying = true
+      } else if (!track) {
+        this.isPlaying = !this.isPlaying
       }
     },
     nextTrack() {
-      this.index++
-      if (this.index > this.tracks.length - 1) {
-        this.index = 0
-      }
+      this.index = (this.index + 1) % this.tracks.length
       this.current = this.tracks[this.index]
-      this.player.src = this.current.src
-      if (this.isPlaying) this.player.play()
+      this.isPlaying = true
+      // Preload the next-next track for smoother experience
+      const nextIndex = (this.index + 1) % this.tracks.length
+      this.preloadTrack(this.tracks[nextIndex])
     },
     prevTrack() {
-      this.index--
-      if (this.index < 0) {
-        this.index = this.tracks.length - 1
-      }
-      // this.index = (this.index - 1 + this.tracks.length) % this.tracks.length
+      this.index = (this.index - 1 + this.tracks.length) % this.tracks.length
       this.current = this.tracks[this.index]
-      this.player.src = this.current.src
-      this.player.load() // ensures the new track is ready to play
-      if (this.isPlaying) this.player.play()
+      this.isPlaying = true
+      // Preload previous track’s previous track
+      const prevIndex = (this.index - 1 + this.tracks.length) % this.tracks.length
+      this.preloadTrack(this.tracks[prevIndex])
     },
   },
 }
