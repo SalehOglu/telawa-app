@@ -2,6 +2,7 @@
 import HelloWorld from './components/HelloWorld.vue'
 import AudioPlayer from './components/AudioPlayer.vue'
 import Playlist from './components/Playlist.vue'
+import CustomSelect from './components/CustomSelect.vue'
 import recitersData from './data/reciters.json'
 import suwarData from './data/suwar.json'
 </script>
@@ -24,6 +25,11 @@ import suwarData from './data/suwar.json'
         <div class="trackInfo">
           <div class="trackTitle">{{ current.title }}</div>
           <div class="trackArtist">{{ current.artist }}</div>
+          <CustomSelect
+            :options="reciterOptions"
+            :modelValue="selectedReciterId"
+            @update:modelValue="onReciterChange"
+          />
         </div>
       </div>
       <Playlist
@@ -45,7 +51,16 @@ export default {
       current: {},
       index: 0,
       tracks: [],
+      selectedReciterId: '10', // default reciter
     }
+  },
+  computed: {
+    reciterOptions() {
+      return recitersData.reciters.map((reciter) => ({
+        label: reciter.name,
+        value: String(reciter.id),
+      }))
+    },
   },
   created() {
     const targetReciter = recitersData.reciters.find((reciter) => Number(reciter.id) === 17)
@@ -107,6 +122,33 @@ export default {
       // Preload previous track’s previous track
       const prevIndex = (this.index - 1 + this.tracks.length) % this.tracks.length
       this.preloadTrack(this.tracks[prevIndex])
+    },
+    onReciterChange(id) {
+      this.selectedReciterId = id
+      const targetReciter = recitersData.reciters.find((r) => String(r.id) === id)
+
+      if (targetReciter && targetReciter.moshaf.length > 0) {
+        const moshaf = targetReciter.moshaf[0]
+        const baseUrl = moshaf.server
+        const surahList = moshaf.surah_list.split(',')
+
+        this.tracks = surahList.map((surahNumber) => {
+          const padded = String(surahNumber).padStart(3, '0')
+          const surah = suwarData.suwar.find((s) => s.id === parseInt(surahNumber, 10))
+
+          return {
+            title: surah ? `${surah.id}. ${surah.name}` : `Surah ${surahNumber}`,
+            artist: targetReciter.name,
+            src: `${baseUrl}${padded}.mp3`,
+          }
+        })
+
+        this.index = 0
+        this.current = { ...this.tracks[0] }
+        this.isPlaying = false
+      } else {
+        console.warn('Reciter or Mushaf not found.')
+      }
     },
   },
 }

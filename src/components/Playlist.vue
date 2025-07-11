@@ -7,7 +7,10 @@
         :key="index"
         class="item"
         @click="$emit('playTrack', track)"
-        :class="{ playing: isPlaying && current === track, active: current === track }"
+        :class="{
+          playing: isPlaying && current.src === track.src,
+          active: current.src === track.src,
+        }"
       >
         {{ track.title }}
       </div>
