@@ -36,6 +36,6 @@ npm run lint
 
 - Add RTL support
 - Add modern audio player
-  <!-- - Add audio waveform effect -->
-  <!-- - Add dropdown menu for reciters -->
+  - Add audio waveform effect (Done)
+  - Add dropdown menu for reciters (Done)
 - Add search bar to filter audios by name.
