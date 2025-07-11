@@ -42,7 +42,7 @@ export default {
   computed: {
     selectedLabel() {
       const selected = this.options.find((opt) => opt.value === this.modelValue)
-      return selected ? selected.label : 'Select Your Artist'
+      return selected ? selected.label : 'Select Your Reciter'
     },
   },
   methods: {
