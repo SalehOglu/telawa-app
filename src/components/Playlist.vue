@@ -11,6 +11,7 @@
           playing: isPlaying && current.src === track.src,
           active: current.src === track.src,
         }"
+        :title="track.title"
       >
         {{ track.title }}
       </div>
@@ -42,7 +43,7 @@ defineProps({
   background-color: peru;
   cursor: pointer;
   display: inline-block;
-  min-width: 135px;
+  min-width: 120px;
   padding: 5px;
   margin: 5px;
   color: white;
