@@ -43,7 +43,7 @@ defineProps({
   background-color: peru;
   cursor: pointer;
   display: inline-block;
-  min-width: 120px;
+  min-width: 135px;
   padding: 5px;
   margin: 5px;
   color: white;
