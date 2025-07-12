@@ -24,13 +24,14 @@ import suwarData from './data/suwar.json'
 
         <div class="trackInfo">
           <div class="trackTitle">{{ current.title }}</div>
-          <div class="trackArtist">{{ current.artist }}</div>
-          <CustomSelect
-            :options="reciterOptions"
-            :modelValue="selectedReciterId"
-            @update:modelValue="onReciterChange"
-          />
+          <div class="trackQare2">{{ current.qare2 }}</div>
+          <div class="trackRewaya">{{ current.rewaya }}</div>
         </div>
+        <CustomSelect
+          :options="reciterOptions"
+          :modelValue="selectedReciterId"
+          @update:modelValue="onReciterChange"
+        />
       </div>
       <Playlist
         :tracks="tracks"
@@ -76,8 +77,9 @@ export default {
 
         return {
           title: surah ? `${surah.id}. ${surah.name}` : `Surah ${surahNumber}`,
-          artist: targetReciter.name,
+          qare2: targetReciter.name,
           src: `${baseUrl}${padded}.mp3`,
+          rewaya: moshaf.name,
         }
       })
 
@@ -138,8 +140,9 @@ export default {
 
           return {
             title: surah ? `${surah.id}. ${surah.name}` : `Surah ${surahNumber}`,
-            artist: targetReciter.name,
+            qare2: targetReciter.name,
             src: `${baseUrl}${padded}.mp3`,
+            rewaya: moshaf.name,
           }
         })
 
@@ -173,6 +176,19 @@ export default {
 
 .trackInfo {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.trackTitle {
+  font-size: 20px;
+  font-weight: bold;
+}
+.trackQare2 {
+  font-size: 17px;
+}
+
+.trackRewaya {
+  font-size: 15px;
+  color: #888;
 }
 </style>

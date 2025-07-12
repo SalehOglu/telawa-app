@@ -4,6 +4,7 @@
       <div class="spinner"></div>
       <div class="loading-text">Loading waveform...</div>
     </div>
+
     <div v-show="waveformReady" ref="waveform" class="waveform"></div>
 
     <MusicControls
@@ -102,6 +103,7 @@ export default {
 <style scoped>
 .waveform {
   margin-bottom: 20px;
+  cursor: pointer;
 }
 .loading-container {
   display: flex;

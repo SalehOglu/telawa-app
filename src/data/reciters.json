@@ -24,7 +24,7 @@
             "moshaf": [
                 {
                     "id": 133,
-                    "name": "Almusshaf Al Mojawwad - Almusshaf Al Mojawwad",
+                    "name": "Almusshaf Al Mojawwad",
                     "server": "https://server12.mp3quran.net/maher/Almusshaf-Al-Mojawwad/",
                     "surah_total": 114,
                     "moshaf_type": 222,
@@ -32,7 +32,7 @@
                 },
                 {
                     "id": 103,
-                    "name": "Almusshaf Al Mo'lim - Almusshaf Al Mo'lim",
+                    "name": "Almusshaf Al Mo'lim",
                     "server": "https://server12.mp3quran.net/maher/Almusshaf-Al-Mo-lim/",
                     "surah_total": 38,
                     "moshaf_type": 213,
@@ -96,7 +96,7 @@
             "moshaf": [
                 {
                     "id": 114,
-                    "name": "Almusshaf Al Mo'lim - Almusshaf Al Mo'lim",
+                    "name": "Almusshaf Al Mo'lim",
                     "server": "https://server10.mp3quran.net/minsh/Almusshaf-Al-Mo-lim/",
                     "surah_total": 114,
                     "moshaf_type": 213,
@@ -985,22 +985,6 @@
             ]
         },
         {
-            "id": 204,
-            "name": "Ibrahem Assadan",
-            "letter": "I",
-            "date": "2022-06-23T10:50:29.000000Z",
-            "moshaf": [
-                {
-                    "id": 204,
-                    "name": "Rewayat Hafs A'n Assem - Murattal",
-                    "server": "https://server10.mp3quran.net/IbrahemSadan/",
-                    "surah_total": 4,
-                    "moshaf_type": 11,
-                    "surah_list": "1,6,19,20"
-                }
-            ]
-        },
-        {
             "id": 205,
             "name": "Ahmad Alhuthaifi",
             "letter": "A",
@@ -1536,7 +1520,7 @@
             "moshaf": [
                 {
                     "id": 286,
-                    "name": "Almusshaf Al Mo'lim - Almusshaf Al Mo'lim",
+                    "name": "Almusshaf Al Mo'lim",
                     "server": "https://server14.mp3quran.net/mousa/Almusshaf-Al-Mo-lim/",
                     "surah_total": 38,
                     "moshaf_type": 213,
@@ -2872,7 +2856,7 @@
             "moshaf": [
                 {
                     "id": 169,
-                    "name": "Almusshaf Al Mo'lim - Almusshaf Al Mo'lim",
+                    "name": "Almusshaf Al Mo'lim",
                     "server": "https://server12.mp3quran.net/bari/Almusshaf-Al-Mo-lim/",
                     "surah_total": 91,
                     "moshaf_type": 213,

@@ -84,12 +84,12 @@ export default {
 .new-select {
   width: 100%;
   max-width: 300px;
-  height: 50px;
+  height: 40px;
   margin: auto;
   margin-top: 20px;
   text-align: center;
   color: #444;
-  line-height: 50px;
+  line-height: 40px;
   position: relative;
 }
 
@@ -157,7 +157,7 @@ export default {
   border-width: 14px 8px 0 8px; /* Height: 14px / Width: 16px */
   border-color: #bbb transparent transparent transparent;
   position: absolute;
-  top: 18px; /* 50 / 2 - 14 / 2 */
+  top: 13px; /* 40 / 2 - 14 / 2 */
   right: 22px; /* 60 / 2 - 16 / 2 */
 }
 
