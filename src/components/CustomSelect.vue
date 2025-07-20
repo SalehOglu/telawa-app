@@ -99,7 +99,7 @@ export default {
   left: 0;
   right: 0;
   z-index: 10;
-  max-height: 200px; /* adjust as needed */
+  max-height: 230px; /* adjust as needed */
   overflow-y: auto;
   background: white;
   border: 1px solid #ccc;

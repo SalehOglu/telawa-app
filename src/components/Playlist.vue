@@ -43,10 +43,12 @@ defineProps({
   background-color: peru;
   cursor: pointer;
   display: inline-block;
-  min-width: 135px;
+  min-width: 165px;
   padding: 5px;
   margin: 5px;
   color: white;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .playlist .item:hover {
   background: #444;

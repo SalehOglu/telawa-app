@@ -8,39 +8,32 @@ import suwarData from './data/suwar.json'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="Telawa App" />
+  <div class="wrapper">
+    <HelloWorld msg="Telawa App" />
 
-      <div class="trackPlayer">
-        <AudioPlayer
-          :track="current"
-          :isPlaying="isPlaying"
-          @togglePlay="togglePlay"
-          @nextTrack="nextTrack"
-          @prevTrack="prevTrack"
-          @ready="onWaveformReady"
-        />
-
-        <div class="trackInfo">
-          <div class="trackTitle">{{ current.title }}</div>
-          <div class="trackQare2">{{ current.qare2 }}</div>
-          <div class="trackRewaya">{{ current.rewaya }}</div>
-        </div>
-        <CustomSelect
-          :options="reciterOptions"
-          :modelValue="selectedReciterId"
-          @update:modelValue="onReciterChange"
-        />
-      </div>
-      <Playlist
-        :tracks="tracks"
-        :current="current"
+    <div class="trackPlayer">
+      <AudioPlayer
+        :track="current"
         :isPlaying="isPlaying"
-        @playTrack="togglePlay"
+        @togglePlay="togglePlay"
+        @nextTrack="nextTrack"
+        @prevTrack="prevTrack"
+        @ready="onWaveformReady"
+      />
+
+      <div class="trackInfo">
+        <div class="trackTitle">{{ current.title }}</div>
+        <div class="trackQare2">{{ current.qare2 }}</div>
+        <div class="trackRewaya">{{ current.rewaya }}</div>
+      </div>
+      <CustomSelect
+        :options="reciterOptions"
+        :modelValue="selectedReciterId"
+        @update:modelValue="onReciterChange"
       />
     </div>
-  </header>
+    <Playlist :tracks="tracks" :current="current" :isPlaying="isPlaying" @playTrack="togglePlay" />
+  </div>
 </template>
 
 <script>
@@ -158,6 +151,10 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  max-width: 1280px;
+  margin: 20px auto;
+}
 .trackPlayer {
   max-width: 1200px;
   margin: 20px auto;
