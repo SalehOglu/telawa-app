@@ -8,6 +8,7 @@
         <p class="loading-label">{{ loadingLabel }}</p>
       </div>
       <div v-show="waveformReady" ref="waveform" class="waveform"></div>
+      <audio ref="mediaElement" crossorigin="anonymous" style="display: none;"></audio>
     </div>
 
     <!-- Live progress & time display -->
@@ -69,6 +70,7 @@ export default {
   },
   created() {
     this.wavesurfer = null
+    this.loadTimeout = null
   },
   computed: {
     formattedCurrent() { return this.formatTime(this.currentTime) },
@@ -78,12 +80,19 @@ export default {
     track: {
       handler(newTrack) {
         if (!newTrack?.src || !this.wavesurfer) return
+        
+        // Debounce to prevent multiple concurrent downloads when clicking fast
+        if (this.loadTimeout) clearTimeout(this.loadTimeout)
+        
         this.isLoading = true
         this.waveformReady = false
         this.currentTime = 0
         this.duration = 0
-        if (this.wavesurfer.isPlaying()) this.wavesurfer.stop()
-        this.wavesurfer.load(newTrack.src)
+        
+        this.loadTimeout = setTimeout(() => {
+          if (this.wavesurfer.isPlaying()) this.wavesurfer.stop()
+          this.wavesurfer.load(newTrack.src)
+        }, 150) // Short debounce for responsive feel
       },
     },
     isPlaying(newVal) {
@@ -100,6 +109,7 @@ export default {
     this.$nextTick(() => {
       this.wavesurfer = WaveSurfer.create({
         container: this.$refs.waveform,
+        media: this.$refs.mediaElement,
         waveColor: 'rgba(255, 255, 255, 0.06)',
         progressColor: '#FFAA3D',
         cursorColor: '#c87941',
@@ -110,7 +120,6 @@ export default {
         height: 80,
         normalize: true,
         responsive: true,
-        backend: 'WebAudio',
       })
 
       if (this.track?.src) {
