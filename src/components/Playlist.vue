@@ -82,12 +82,13 @@ defineProps({
   display: flex;
   flex-direction: column;
   gap: 4px; /* Tighter gap for sidebar */
+  padding-block: 10px;
 }
 
 .track-row {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 5px 16px;
   background: transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
