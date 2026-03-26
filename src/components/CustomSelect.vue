@@ -1,23 +1,41 @@
 <template>
-  <div class="new-select">
-    <div class="selection" :class="{ open: isOpen }" @click="toggleSelect">
-      <p>
-        <span>{{ selectedLabel }}</span>
-      </p>
-      <span></span>
-    </div>
-
-    <div class="optionsContainer" v-show="isOpen">
-      <div
-        v-for="(option, index) in options"
-        :key="option.value"
-        class="new-option"
-        :class="{ reveal: isOpen }"
-        @click="selectOption(option)"
-      >
-        <p>{{ option.label }}</p>
+  <div class="custom-select" ref="selectContainer">
+    <div class="select-label">Choose Reciter</div>
+    <div 
+      class="select-trigger" 
+      :class="{ 'is-open': isOpen }" 
+      @click="toggleSelect"
+    >
+      <div class="selected-value">
+        <span class="value-text">{{ selectedLabel }}</span>
+      </div>
+      <div class="chevron">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 10l5 5 5-5z"/>
+        </svg>
       </div>
     </div>
+
+    <transition name="dropdown">
+      <div v-if="isOpen" class="options-menu">
+        <div class="options-list">
+          <div
+            v-for="option in options"
+            :key="option.value"
+            class="option-item"
+            :class="{ 'is-selected': option.value === modelValue }"
+            @click="selectOption(option)"
+          >
+            <span class="option-label">{{ option.label }}</span>
+            <div v-if="option.value === modelValue" class="check-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -45,6 +63,12 @@ export default {
       return selected ? selected.label : 'Select Your Reciter'
     },
   },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside)
+  },
   methods: {
     toggleSelect() {
       this.isOpen = !this.isOpen
@@ -53,134 +77,115 @@ export default {
       this.$emit('update:modelValue', String(option.value))
       this.isOpen = false
     },
-    getOptionStyle(index) {
-      const count = this.options.length
-      if (!this.isOpen) {
-        if (index < count - 3) return { top: '0', boxShadow: 'none' }
-        else if (index === count - 3) return { top: '3px' }
-        else if (index === count - 2) return { top: '7px', left: '2px', right: '2px' }
-        else if (index === count - 1) return { top: '11px', left: '4px', right: '4px' }
-      } else {
-        const optionHeight = 50 // adjust if your .new-option height differs
-        return {
-          top: `${(index + 1) * (optionHeight + 1)}px`,
-          boxShadow: '0 1px 1px rgba(0,0,0,0.1)',
-          left: '0',
-          right: '0',
-        }
+    handleClickOutside(event) {
+      if (this.$refs.selectContainer && !this.$refs.selectContainer.contains(event.target)) {
+        this.isOpen = false
       }
-      return {}
-    },
+    }
   },
 }
 </script>
 
-<style>
-.old-select {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-}
-.new-select {
+<style scoped>
+.custom-select {
   width: 100%;
-  max-width: 300px;
-  height: 40px;
-  margin: auto;
-  margin-top: 20px;
-  text-align: center;
-  color: #444;
-  line-height: 40px;
   position: relative;
+  text-align: left;
+  user-select: none;
 }
 
-.new-select .optionsContainer {
+.select-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  padding-left: 2px;
+}
+
+.select-trigger {
+  height: 48px; /* Slightly more compact height for the new header position */
+  width: 100%;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  color: var(--text-primary);
+}
+
+.select-trigger:hover {
+  border-color: var(--border-accent);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.select-trigger.is-open {
+  border-color: var(--accent);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.selected-value {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.is-open .chevron { transform: rotate(180deg); color: var(--accent); }
+.chevron svg { width: 100%; height: 100%; }
+
+.options-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 10px);
   left: 0;
   right: 0;
-  z-index: 10;
-  max-height: 230px; /* adjust as needed */
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  overflow: hidden;
+  backdrop-filter: blur(40px);
 }
 
-.optionsContainer::-webkit-scrollbar {
-  width: 6px;
-}
+.options-list { max-height: 240px; overflow-y: auto; padding: 6px; }
+.options-list::-webkit-scrollbar { width: 3px; }
+.options-list::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 99px; }
 
-.optionsContainer::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.new-select .selection:active {
-  transform: rotateX(42deg);
-  transform-style: preserve-3d;
-  transform-origin: top;
-  transition: transform 200ms ease-in-out;
-}
-
-.new-select .selection {
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+.option-item {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  position: relative;
-  z-index: 20;
-  transform: rotateX(0deg);
-  transform-style: preserve-3d;
-  transform-origin: top;
-  transition: transform 200ms ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
 }
 
-.new-select .selection p {
-  width: calc(100% - 60px);
-  position: relative;
+.option-item:hover { background: var(--bg-glass); color: var(--text-primary); }
+.option-item.is-selected { background: var(--accent-dim); color: var(--accent); }
+.check-icon { width: 14px; height: 14px; color: var(--accent); }
+.check-icon svg { width: 100%; height: 100%; }
 
-  transition: all 200ms ease-in-out;
-}
-
-.new-select .selection:hover,
-.new-select .selection.open {
-  background-color: #e2e2e2;
-  color: #f26600;
-}
-
-.new-select .selection > span {
-  display: block;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 14px 8px 0 8px; /* Height: 14px / Width: 16px */
-  border-color: #bbb transparent transparent transparent;
-  position: absolute;
-  top: 13px; /* 40 / 2 - 14 / 2 */
-  right: 22px; /* 60 / 2 - 16 / 2 */
-}
-
-.new-select .selection.open > span {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 8px 14px 8px;
-  border-color: transparent transparent #bbb transparent;
-}
-
-.new-option {
-  text-align: center;
-  background-color: #fff;
-  cursor: pointer;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  position: relative;
-  margin-top: 1px;
-  transition: all 300ms ease-in-out;
-}
-
-.new-option.reveal:hover {
-  background-color: #ffc9ae;
-  color: #333;
-}
+/* Transitions */
+.dropdown-enter-active, .dropdown-leave-active { transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1); }
+.dropdown-enter-from, .dropdown-leave-to { opacity: 0; transform: translateY(-12px) scale(0.98); }
 </style>

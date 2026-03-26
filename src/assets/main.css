@@ -1,8 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap');
 @import './base.css';
 
-#app {
-  margin: 0 auto;
-  padding: 20px;
-  font-weight: normal;
-  background-color: #fff8e7;
+:root {
+  --bg-primary: #0d0d14;
+  --bg-secondary: #13131f;
+  --bg-card: #1a1a2e;
+  --bg-glass: rgba(255, 255, 255, 0.04);
+  --accent: #c87941;
+  --accent-light: #e8954d;
+  --accent-glow: rgba(200, 121, 65, 0.35);
+  --accent-dim: rgba(200, 121, 65, 0.12);
+  --gold: #d4a94a;
+  --gold-dim: rgba(212, 169, 74, 0.15);
+  --text-primary: #f0ead8;
+  --text-secondary: #9b9098;
+  --text-muted: #5c5467;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-accent: rgba(200, 121, 65, 0.3);
+  --shadow-card: 0 24px 48px rgba(0, 0, 0, 0.5), 0 8px 16px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 40px var(--accent-glow);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
 }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 0;
+  margin: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
