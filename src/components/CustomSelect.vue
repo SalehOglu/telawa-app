@@ -1,6 +1,6 @@
 <template>
   <div class="custom-select" ref="selectContainer">
-    <div class="select-label">Choose Reciter</div>
+    <div class="select-label">{{ placeholder }}</div>
     <div 
       class="select-trigger" 
       :class="{ 'is-open': isOpen }" 
@@ -51,6 +51,10 @@ export default {
       type: String,
       required: true,
     },
+    placeholder: {
+      type: String,
+      default: 'Choose Option',
+    },
   },
   data() {
     return {
@@ -60,7 +64,7 @@ export default {
   computed: {
     selectedLabel() {
       const selected = this.options.find((opt) => opt.value === this.modelValue)
-      return selected ? selected.label : 'Select Your Reciter'
+      return selected ? selected.label : this.placeholder
     },
   },
   mounted() {
@@ -90,7 +94,7 @@ export default {
 .custom-select {
   width: 100%;
   position: relative;
-  text-align: left;
+  text-align: inherit;
   user-select: none;
 }
 
@@ -101,7 +105,7 @@ export default {
   letter-spacing: 0.5px;
   margin-bottom: 6px;
   font-weight: 600;
-  padding-left: 2px;
+  padding-inline-start: 2px;
 }
 
 .select-trigger {

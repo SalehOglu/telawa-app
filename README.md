@@ -34,8 +34,8 @@ npm run lint
 
 ### Todo
 
-- Add RTL support
-- Add modern audio player
+- Add RTL support (Done)
+- Add modern audio player (Done)
   - Add audio waveform effect (Done)
   - Add dropdown menu for reciters (Done)
 - Add search bar to filter audios by name.

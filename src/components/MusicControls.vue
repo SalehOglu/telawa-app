@@ -2,7 +2,7 @@
   <div class="controls-container">
     <div class="main-controls">
       <!-- Previous Track -->
-      <button class="btn btn-prev" @click="$emit('prevTrack')" title="Previous Surah">
+      <button class="btn btn-prev" @click="$emit('prevTrack')" :title="prevLabel">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M6 6h2v12H6zm3.5 6L18 18V6z"/>
         </svg>
@@ -10,7 +10,7 @@
 
       <!-- Toggle Play -->
       <div class="play-pause-btn-wrap" :class="{ 'is-playing': isPlaying }">
-        <button class="btn btn-play-pause" @click="$emit('togglePlay')" :title="isPlaying ? 'Pause' : 'Play'">
+        <button class="btn btn-play-pause" @click="$emit('togglePlay')" :title="isPlaying ? pauseLabel : playLabel">
           <div v-if="!isPlaying" class="icon icon-play">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
@@ -25,7 +25,7 @@
       </div>
 
       <!-- Next Track -->
-      <button class="btn btn-next" @click="$emit('nextTrack')" title="Next Surah">
+      <button class="btn btn-next" @click="$emit('nextTrack')" :title="nextLabel">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
         </svg>
@@ -38,10 +38,11 @@
 export default {
   name: 'MusicControls',
   props: {
-    isPlaying: {
-      type: Boolean,
-      default: false,
-    },
+    isPlaying: { type: Boolean, default: false },
+    prevLabel: { type: String, default: 'Previous' },
+    nextLabel: { type: String, default: 'Next' },
+    playLabel: { type: String, default: 'Play' },
+    pauseLabel: { type: String, default: 'Pause' },
   },
 }
 </script>
@@ -63,6 +64,7 @@ export default {
 .btn {
   background: none;
   border: none;
+  outline: none;
   cursor: pointer;
   color: var(--text-muted);
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -143,9 +145,26 @@ export default {
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
 }
 
-.icon-play {
-  margin-left: 4px; /* compensate for play triangle shape */
+:where([dir="rtl"]) .btn-prev,
+:where([dir="rtl"]) .btn-next,
+:where([dir="rtl"]) .icon-play {
+  transform: scaleX(-1);
 }
 
-/* Sub-controls like shuffle/repeat could be added here in the future if needed */
+:where([dir="rtl"]) .btn-prev:hover,
+:where([dir="rtl"]) .btn-next:hover,
+:where([dir="rtl"]) .btn-play-pause:hover .icon-play {
+  transform: scaleX(-1) scale(1.1);
+}
+
+:where([dir="rtl"]) .btn-prev:active,
+:where([dir="rtl"]) .btn-next:active,
+:where([dir="rtl"]) .btn-play-pause:active .icon-play {
+  transform: scaleX(-1) scale(0.9);
+}
+
+:where([dir="rtl"]) .icon-play {
+  margin-left: 0;
+  margin-right: 4px;
+}
 </style>

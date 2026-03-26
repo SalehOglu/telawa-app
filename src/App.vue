@@ -6,6 +6,8 @@ import CustomSelect from './components/CustomSelect.vue'
 import recitersData from './data/reciters.json'
 import suwarData from './data/suwar.json'
 
+import { arabicSuwar, uiTranslations } from './locales/translations'
+
 // State
 const isPlaying = ref(false)
 const current = ref({})
@@ -13,6 +15,9 @@ const index = ref(0)
 const tracks = ref([])
 const selectedReciterId = ref('17')
 const isSidebarOpen = ref(false)
+const locale = ref('en')
+
+const t = computed(() => uiTranslations[locale.value])
 
 // Computed
 const reciterOptions = computed(() => {
@@ -32,10 +37,17 @@ const loadReciter = (id) => {
 
     tracks.value = surahList.map((surahNumber) => {
       const padded = String(surahNumber).padStart(3, '0')
-      const surah = suwarData.suwar.find((s) => s.id === parseInt(surahNumber, 10))
+      const surahIndex = parseInt(surahNumber, 10)
+      const surah = suwarData.suwar.find((s) => s.id === surahIndex)
+      
+      let title = surah ? surah.name : `Surah ${surahNumber}`
+      if (locale.value === 'ar') {
+        title = arabicSuwar[surahIndex - 1] || title
+      }
 
       return {
-        title: surah ? `${surah.id}. ${surah.name}` : `Surah ${surahNumber}`,
+        id: surahNumber,
+        title: locale.value === 'ar' ? `${surahNumber}. ${title}` : `${surahNumber}. ${title}`,
         qare2: targetReciter.name,
         src: `${baseUrl}${padded}.mp3`,
         rewaya: moshaf.name,
@@ -45,6 +57,13 @@ const loadReciter = (id) => {
     index.value = 0
     current.value = tracks.value[0]
   }
+}
+
+const toggleLocale = () => {
+  locale.value = locale.value === 'en' ? 'ar' : 'en'
+  document.documentElement.setAttribute('dir', locale.value === 'ar' ? 'rtl' : 'ltr')
+  document.documentElement.setAttribute('lang', locale.value)
+  loadReciter(selectedReciterId.value)
 }
 
 const togglePlay = (track) => {
@@ -99,11 +118,13 @@ onMounted(() => {
         </button>
 
         <div class="logo">
+          <span class="logo-text">{{ locale === 'en' ? 'Telawah' : 'تلاوة' }}</span>
           <span class="logo-icon">☽</span>
-          <span class="logo-text">تلاوة</span>
         </div>
 
-        <div class="header-spacer"></div>
+        <button class="lang-switch-btn" @click="toggleLocale">
+          {{ t.langName }}
+        </button>
       </div>
     </header>
 
@@ -120,6 +141,8 @@ onMounted(() => {
             :tracks="tracks"
             :current="current"
             :isPlaying="isPlaying"
+            :locale="locale"
+            :translations="t"
             @playTrack="togglePlay"
           />
         </div>
@@ -133,7 +156,9 @@ onMounted(() => {
             <div class="player-card">
               <div class="player-header-row">
                 <div class="track-info-group">
-                  <span class="now-playing-label">Now Playing • Surah {{ index + 1 }}</span>
+                  <span class="now-playing-label">
+                    {{ t.nowPlaying }} {{ index + 1 }}
+                  </span>
                   <h1 class="chapter-name">{{ current.title }}</h1>
                   <div class="meta-tag-pills">
                     <span class="meta-pill">{{ current.rewaya }}</span>
@@ -145,6 +170,7 @@ onMounted(() => {
                   <CustomSelect
                     :options="reciterOptions"
                     :modelValue="selectedReciterId"
+                    :placeholder="t.chooseReciter"
                     @update:modelValue="onReciterChange"
                   />
                 </div>
@@ -154,6 +180,11 @@ onMounted(() => {
                 <AudioPlayer
                   :track="current"
                   :isPlaying="isPlaying"
+                  :loadingLabel="t.loading"
+                  :prevLabel="t.prev"
+                  :nextLabel="t.next"
+                  :playLabel="t.play"
+                  :pauseLabel="t.pause"
                   @togglePlay="togglePlay"
                   @nextTrack="nextTrack"
                   @prevTrack="prevTrack"
@@ -217,15 +248,51 @@ onMounted(() => {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  pointer-events: none; /* Let clicks pass through if needed, though header items are small */
+  pointer-events: none;
 }
 
-.logo-icon { font-size: 55px; color: var(--gold); }
-.logo-text { font-family: 'Amiri', serif; font-size: 60px; font-weight: 700; background: linear-gradient(135deg, var(--gold) 0%, var(--accent-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+:where([dir="rtl"]) .logo-icon {
+  transform: rotate(180deg);
+}
+
+.logo-icon { font-size: 55px; color: var(--gold); transition: transform 0.3s ease; }
+.logo-text { 
+  font-family: 'Outfit', sans-serif; 
+  font-size: 60px; 
+  font-weight: 700; 
+  background: linear-gradient(135deg, var(--gold) 0%, var(--accent-light) 100%); 
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent; 
+}
+
+:where([lang="ar"]) .logo-text {
+  font-family: 'Cairo', sans-serif;
+  font-size: 54px; /* Slight adjustment for Cairo's visual size */
+  font-weight: 800;
+}
 
 .header-spacer { flex: 1; }
 
-/* Toggle Menu Button */
+.lang-switch-btn {
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  z-index: 101;
+  position: absolute;
+  right: 40px;
+}
+
+.lang-switch-btn:hover {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  color: var(--gold);
+}
 .menu-toggle {
   background: none;
   border: none;
@@ -236,6 +303,8 @@ onMounted(() => {
   justify-content: center;
   z-index: 101;
   display: none; /* Hidden on desktop */
+  position: absolute;
+  left: 40px;
 }
 
 .burger-icon {
@@ -289,6 +358,11 @@ onMounted(() => {
   backdrop-filter: blur(24px);
   flex-shrink: 0;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:where([dir="rtl"]) .sidebar {
+  border-right: none;
+  border-left: 1px solid var(--border);
 }
 
 .sidebar-header {
@@ -410,7 +484,7 @@ onMounted(() => {
 }
 
 .meta-pill {
-  padding: 8px 18px;
+  padding: 8px 14px;
   border-radius: 99px;
   background: var(--bg-glass);
   border: 1px solid var(--border);
@@ -441,7 +515,8 @@ onMounted(() => {
 }
 
 @media (max-width: 820px) {
-  .menu-toggle { display: flex; }
+  .menu-toggle { display: flex; left: 20px; }
+  .lang-switch-btn { right: 20px; }
   .header-inner { padding: 0 20px; }
   .main-page-header { height: 70px; }
   .logo-text { font-size: 32px; }
@@ -459,6 +534,15 @@ onMounted(() => {
     transform: translateX(-102%);
     border-right: 1px solid var(--border);
     box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+  }
+
+  :where([dir="rtl"]) .sidebar {
+    left: auto;
+    right: 0;
+    transform: translateX(102%);
+    border-right: none;
+    border-left: 1px solid var(--border);
+    box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
   }
 
   .sidebar.is-open {

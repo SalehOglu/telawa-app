@@ -5,30 +5,37 @@
         <div class="pulse-rings">
           <span></span><span></span><span></span>
         </div>
-        <p class="loading-label">Loading Audio...</p>
+        <p class="loading-label">{{ loadingLabel }}</p>
       </div>
       <div v-show="waveformReady" ref="waveform" class="waveform"></div>
     </div>
 
     <!-- Live progress & time display -->
     <div class="player-bottom-controls">
-      <div class="time-display">
-        <span class="time-now">{{ formattedCurrent }}</span>
-        <div class="time-divider">/</div>
-        <span class="time-total">{{ formattedDuration }}</span>
-      </div>
-
+      
+      <!-- Spacer for balance -->
+      <div class="controls-spacer"></div>
+    
       <div class="action-controls">
         <MusicControls
           :isPlaying="isPlaying"
+          :prevLabel="prevLabel"
+          :nextLabel="nextLabel"
+          :playLabel="playLabel"
+          :pauseLabel="pauseLabel"
           @togglePlay="$emit('togglePlay')"
           @prevTrack="$emit('prevTrack')"
           @nextTrack="$emit('nextTrack')"
         />
       </div>
 
-      <!-- Spacer for balance -->
-      <div class="controls-spacer"></div>
+      <div class="time-display">
+        <span class="time-now">{{ formattedCurrent }}</span>
+        <div class="time-divider">/</div>
+        <span class="time-total">{{ formattedDuration }}</span>
+      </div>
+
+      
     </div>
   </div>
 </template>
@@ -43,15 +50,25 @@ export default {
   props: {
     isPlaying: Boolean,
     track: Object,
+    loadingLabel: {
+      type: String,
+      default: 'Loading Audio...',
+    },
+    prevLabel: String,
+    nextLabel: String,
+    playLabel: String,
+    pauseLabel: String,
   },
   data() {
     return {
-      wavesurfer: null,
       waveformReady: false,
       isLoading: false,
       currentTime: 0,
       duration: 0,
     }
+  },
+  created() {
+    this.wavesurfer = null
   },
   computed: {
     formattedCurrent() { return this.formatTime(this.currentTime) },

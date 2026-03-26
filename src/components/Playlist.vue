@@ -1,8 +1,8 @@
 <template>
   <div class="playlist-container">
     <div class="playlist-header">
-      <h2 class="playlist-title">Surah Chapters</h2>
-      <span class="track-count">{{ tracks.length }} Surahs</span>
+      <h2 class="playlist-title">{{ translations.surahChapters }}</h2>
+      <span class="track-count">{{ tracks.length }} {{ translations.surahsCount }}</span>
     </div>
 
     <div class="tracks-list">
@@ -32,7 +32,7 @@
 
         <div class="track-actions">
            <div class="play-indicator">
-             <span class="play-icon">▶</span>
+             <span class="play-icon">{{ locale === 'ar' ? '◀' : '▶' }}</span>
            </div>
         </div>
       </div>
@@ -45,6 +45,8 @@ defineProps({
   tracks: Array,
   current: Object,
   isPlaying: Boolean,
+  locale: String,
+  translations: Object,
 })
 </script>
 
@@ -88,12 +90,16 @@ defineProps({
 .track-row {
   display: flex;
   align-items: center;
-  padding: 5px 16px;
+  padding: 8px 16px;
   background: transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid transparent;
+
+  /* Performance optimization for 114 items */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 45px;
 }
 
 .track-row:hover {
