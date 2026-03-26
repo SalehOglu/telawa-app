@@ -84,7 +84,7 @@ export default {
       this.wavesurfer = WaveSurfer.create({
         container: this.$refs.waveform,
         waveColor: 'rgba(255, 255, 255, 0.06)',
-        progressColor: 'rgba(200, 121, 65, 0.9)',
+        progressColor: '#FFAA3D',
         cursorColor: '#c87941',
         cursorWidth: 2,
         barWidth: 4,
@@ -151,9 +151,10 @@ export default {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
-.waveform { width: 100%; cursor: pointer; }
+.waveform { width: 100%; cursor: pointer; min-width: 0; }
 
 /* Pulse loading */
 .loading-overlay { display: flex; flex-direction: column; align-items: center; gap: 20px; }

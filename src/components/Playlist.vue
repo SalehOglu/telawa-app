@@ -22,7 +22,7 @@
           </span>
           <span v-else>{{ String(index + 1).padStart(2, '0') }}</span>
         </div>
-        
+
         <div class="track-details">
           <div class="track-name">{{ track.title }}</div>
           <div class="track-info">

@@ -28,11 +28,11 @@ const loadReciter = (id) => {
     const moshaf = targetReciter.moshaf[0]
     const baseUrl = moshaf.server
     const surahList = moshaf.surah_list.split(',')
-    
+
     tracks.value = surahList.map((surahNumber) => {
       const padded = String(surahNumber).padStart(3, '0')
       const surah = suwarData.suwar.find((s) => s.id === parseInt(surahNumber, 10))
-      
+
       return {
         title: surah ? `${surah.id}. ${surah.name}` : `Surah ${surahNumber}`,
         qare2: targetReciter.name,
@@ -40,7 +40,7 @@ const loadReciter = (id) => {
         rewaya: moshaf.name,
       }
     })
-    
+
     index.value = 0
     current.value = tracks.value[0]
   }
@@ -121,7 +121,7 @@ onMounted(() => {
                     <span class="meta-pill meta-pill--gold">{{ current.qare2 }}</span>
                   </div>
                 </div>
-                
+
                 <div class="reciter-dropdown-container">
                   <CustomSelect
                     :options="reciterOptions"
@@ -151,7 +151,7 @@ onMounted(() => {
 <style scoped>
 .app-shell {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   background: var(--bg-primary);
   color: var(--text-primary);
   overflow: hidden;
@@ -180,8 +180,8 @@ onMounted(() => {
 }
 
 .logo { display: flex; align-items: center; gap: 14px; }
-.logo-icon { font-size: 28px; color: var(--gold); }
-.logo-text { font-family: 'Amiri', serif; font-size: 42px; font-weight: 700; background: linear-gradient(135deg, var(--gold) 0%, var(--accent-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.logo-icon { font-size: 55px; color: var(--gold); }
+.logo-text { font-family: 'Amiri', serif; font-size: 60px; font-weight: 700; background: linear-gradient(135deg, var(--gold) 0%, var(--accent-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
 .app-container {
   display: flex;
@@ -190,11 +190,13 @@ onMounted(() => {
   position: relative;
   z-index: 1;
   overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* Sidebar Styling */
 .sidebar {
-  width: 380px;
+  width: 330px;
+  height: 100vh;
   background: rgba(13, 13, 20, 0.8);
   border-right: 1px solid var(--border);
   display: flex;
@@ -242,7 +244,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 60px;
+  gap: 40px;
   margin-bottom: 48px;
 }
 
@@ -271,6 +273,7 @@ onMounted(() => {
 .meta-tag-pills {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .meta-pill {
@@ -290,7 +293,7 @@ onMounted(() => {
 }
 
 .reciter-dropdown-container {
-  width: 320px;
+  width: 280px;
   flex-shrink: 0;
 }
 
@@ -306,7 +309,7 @@ onMounted(() => {
 
 @media (max-width: 820px) {
   .app-container { flex-direction: column; overflow-y: auto; height: auto; }
-  .sidebar { width: 100%; height: auto; max-height: 40vh; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar { width: 100%; height: auto; max-height: 40vh; order: 2; border-right: none; border-bottom: 1px solid var(--border); }
   .main-page-header { height: 80px; }
   .logo-text { font-size: 32px; }
   .top-player-section { padding: 30px 20px; }
