@@ -1,14 +1,18 @@
 <template>
   <div class="audio-player">
     <div class="waveform-container">
-      <div v-if="isLoading" class="loading-overlay">
+      <div v-show="isLoading || !waveformReady" class="loading-overlay">
         <div class="pulse-rings">
-          <span></span><span></span><span></span>
+          <span :class="{ 'is-fast': !isLoading }"></span>
+          <span :class="{ 'is-fast': !isLoading }"></span>
+          <span></span>
         </div>
-        <p class="loading-label">{{ loadingLabel }}</p>
+        <p class="loading-label">
+          {{ isLoading ? loadingLabel : (locale === 'ar' ? 'جاري التحميل...' : 'Buffering Waveform...') }}
+        </p>
       </div>
       <div v-show="waveformReady" ref="waveform" class="waveform"></div>
-      <audio ref="mediaElement" crossorigin="anonymous" style="display: none;"></audio>
+      <audio ref="mediaElement" style="display: none;"></audio>
     </div>
 
     <!-- Live progress & time display -->
@@ -92,7 +96,7 @@ export default {
         this.loadTimeout = setTimeout(() => {
           if (this.wavesurfer.isPlaying()) this.wavesurfer.stop()
           this.wavesurfer.load(newTrack.src)
-        }, 150) // Short debounce for responsive feel
+        }, 50) // Reduced from 150ms for snappier feel
       },
     },
     isPlaying(newVal) {
@@ -128,11 +132,23 @@ export default {
       }
 
       this.wavesurfer.on('ready', () => {
-        this.waveformReady = true
         this.isLoading = false
+        this.waveformReady = true
         this.duration = this.wavesurfer.getDuration()
         this.$emit('ready')
-        if (this.isPlaying) this.wavesurfer.play()
+      })
+
+      this.$refs.mediaElement.oncanplay = () => {
+        // High priority: allow listening even if waveform is slow
+        if (this.isLoading) this.isLoading = false
+        if (this.isPlaying && !this.wavesurfer.isPlaying()) {
+          this.wavesurfer.play().catch(() => {})
+        }
+      }
+
+      this.wavesurfer.on('error', () => {
+        this.isLoading = false
+        this.waveformReady = true // Show the empty waveform container so it doesn't stay on loading forever
       })
 
       this.wavesurfer.on('audioprocess', () => {
@@ -191,7 +207,9 @@ export default {
 .pulse-rings span:nth-child(3) { width: 40%; height: 40%; animation-delay: 0.8s; background: var(--accent); opacity: 0.55; animation: none; }
 
 @keyframes pulse-out { 0% { transform: scale(0.5); opacity: 0.8; } 100% { transform: scale(1.4); opacity: 0; } }
-.loading-label { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
+.pulse-rings span.is-fast { animation-duration: 0.8s; border-color: var(--gold); }
+
+.loading-label { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 500; text-align: center; }
 
 /* Bottom controls and time */
 .player-bottom-controls {
